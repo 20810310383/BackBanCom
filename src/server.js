@@ -33,6 +33,7 @@ connectDB();
 const allowedOrigins = [
     'http://localhost:3333', // Local development - admin
     'http://localhost:3334', // Local development
+    'https://react-trang-chu-ban-com.vercel.app'
     
 ];
 
