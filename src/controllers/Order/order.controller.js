@@ -140,7 +140,7 @@ const createOrder = async (req, res) => {
             // Tạo nội dung email với bảng sản phẩm
             const mailOptions = {
                 from: 'ADMIN',
-                to: toEmail,
+                to: 'dokhactu1822@gmail.com',
                 subject: 'Thông Báo Khách Đặt Hàng',
                 html: `
                         <div style="max-width: 600px; margin: auto; font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; border-radius: 10px;">
