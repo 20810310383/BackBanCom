@@ -96,7 +96,7 @@ const createOrder = async (req, res) => {
                                 <thead>
                                     <tr>
                                         <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Tên sản phẩm</th>
-                                        <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Cấu hình</th>
+                                        <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Sản Lượng</th>
                                         <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Số lượng</th>
                                         <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Đơn giá</th>
                                         <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Tổng tiền</th>
@@ -119,7 +119,61 @@ const createOrder = async (req, res) => {
                             <p><strong>Địa chỉ nhận hàng:</strong> <span style="color: #34495e; font-style: italic;">${address}</span></p>
                             <br/>
                                                                                    
-                            <p style="text-align: center; font-size: 16px;">Bạn có thể theo dõi đơn hàng tại <a href="https://shopbandodientu.dokhactu.site" style="color: #3498db; text-decoration: none;">WebShop Khắc Tú</a></p>
+                            <p style="text-align: center; font-size: 16px;">Bạn có thể theo dõi đơn hàng tại <a href="#" style="color: #3498db; text-decoration: none;">WebShop Khắc Tú</a></p>
+                        </div>
+                    `
+            };
+
+            return new Promise((resolve, reject) => {
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                        resolve();
+                    }
+                });
+            });
+        };
+
+        const sendOrderConfirmationEmailThongBaoChoAdmin = async (toEmail) => {
+            // Tạo nội dung email với bảng sản phẩm
+            const mailOptions = {
+                from: 'ADMIN',
+                to: toEmail,
+                subject: 'Thông Báo Khách Đặt Hàng',
+                html: `
+                        <div style="max-width: 600px; margin: auto; font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; border-radius: 10px;">
+                            <h2 style="text-align: center; color: #2c3e50;">Khách hàng đã đặt hàng!</h2>
+                            <p style="color: #34495e;">Khách hàng: <strong>${lastName} ${firstName}</strong></p>
+                            <p>Số điện thoại: <strong>${phone}</strong></p>
+                            <p>Địa chỉ nhận hàng: <strong>${address}</strong></p>
+
+                            <h3 style="text-align: center; color: #2c3e50;">Thông tin sản phẩm</h3>
+                            <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; background-color: #ffffff;">
+                                <thead>
+                                    <tr>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Sản Lượng</th>
+                                        <th>Số lượng</th>
+                                        <th>Đơn giá</th>
+                                        <th>Tổng tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${productsHtml}
+                                </tbody>
+                            </table>
+
+                            <h3 style="color: #2c3e50;">Tổng kết đơn hàng</h3>
+                            <p><strong>Tổng số lượng:</strong> ${tongSoLuong} sản phẩm</p>
+                            <p><strong>Tổng tiền:</strong> ${formatCurrency(thanhTien)}</p>
+                            <p><strong>Giảm giá:</strong> -${formatCurrency(soTienGiamGia)} (${giamGia}%)</p>
+                            <p><strong>Số tiền cần thanh toán:</strong> ${formatCurrency(soTienCanThanhToan)}</p>
+
+                            <p style="text-align: center; font-size: 16px;">
+                                <a href="#" style="color: #3498db;">Quản lý đơn hàng</a>
+                            </p>
                         </div>
                     `
             };
@@ -163,7 +217,7 @@ const createOrder = async (req, res) => {
             // Kiểm tra số lượng tồn có đủ hay không
             if (size.quantity < item.quantity) {
                 return res.status(400).json({
-                    message: `Sản phẩm ${product.TenSP} - cấu hình: ${item.size} chỉ còn ${size.quantity} sản phẩm trong kho, bạn không thể đặt ${item.quantity} sản phẩm!`,
+                    message: `Sản phẩm ${product.TenSP} - Sản Lượng: ${item.size} chỉ còn ${size.quantity} sản phẩm trong kho, bạn không thể đặt ${item.quantity} sản phẩm!`,
                 });
             }
         }
@@ -305,7 +359,7 @@ const createOrderThanhToanVNPay = async (req, res) => {
                                 <thead>
                                     <tr>
                                         <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Tên sản phẩm</th>
-                                        <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Cấu hình</th>
+                                        <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Sản Lượng</th>
                                         <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Số lượng</th>
                                         <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Đơn giá</th>
                                         <th style="text-align: left; padding: 8px; background-color: #ecf0f1; color: #2c3e50;">Tổng tiền</th>
@@ -372,7 +426,7 @@ const createOrderThanhToanVNPay = async (req, res) => {
             // Kiểm tra số lượng tồn có đủ hay không
             if (size.quantity < item.quantity) {
                 return res.status(400).json({
-                    message: `Sản phẩm ${product.TenSP} - cấu hình: ${item.size} chỉ còn ${size.quantity} sản phẩm trong kho, bạn không thể đặt ${item.quantity} sản phẩm!`,
+                    message: `Sản phẩm ${product.TenSP} - Sản Lượng: ${item.size} chỉ còn ${size.quantity} sản phẩm trong kho, bạn không thể đặt ${item.quantity} sản phẩm!`,
                 });
             }
         }
